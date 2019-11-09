@@ -28,24 +28,6 @@ def convertDateToString(date):
             str(date.day).zfill(2))
     return dateString
 
-def exchange_rate(startDate, endDate, base, symbols, chartPath):
-    startDateString = convertDateToString(startDate)
-    endDateString = convertDateToString(endDate)
-    
-    symbolString = ""
-    for symbol in symbols:
-        symbolString += "{0},".format(symbol)
-    symbolString = symbolString.strip(",")
-    
-    options = {
-        "--start-at" : startDateString,
-        "--end-at" : endDateString,
-        "--base" : base,
-        "--symbols" : symbolString,
-        "--chart-path" : chartPath
-    }
-    exchange_rate_cmd(options)
-
 def tick_formatter(value, index, tick_count):
     return '{0}-{1}-{2}'.format(
             value.year,
@@ -114,6 +96,24 @@ def exchange_rate_cmd(options):
 
     pathToChart = options["--chart-path"]
     createChart(responseContent, pathToChart)
+
+def exchange_rate(startDate, endDate, base, symbols, chartPath):
+    startDateString = convertDateToString(startDate)
+    endDateString = convertDateToString(endDate)
+    
+    symbolString = ""
+    for symbol in symbols:
+        symbolString += "{0},".format(symbol)
+    symbolString = symbolString.strip(",")
+    
+    options = {
+        "--start-at" : startDateString,
+        "--end-at" : endDateString,
+        "--base" : base,
+        "--symbols" : symbolString,
+        "--chart-path" : chartPath
+    }
+    exchange_rate_cmd(options)
 
 if __name__ == "__main__":
     options = get_options()
