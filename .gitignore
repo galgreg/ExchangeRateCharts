@@ -1,1 +1,3 @@
-materialy_pomocnicze/
+prezentacja/
+__pycache__/
+*.pyc
