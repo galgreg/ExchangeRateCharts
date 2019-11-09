@@ -28,40 +28,44 @@ def convertDateToString(date):
             str(date.day).zfill(2))
     return dateString
 
-def tick_formatter(value, index, tick_count):
-    return '{0}-{1}-{2}'.format(
-            value.year,
-            str(value.month).zfill(2),
-            str(value.day).zfill(2))
+def convertStringToDate(dateString):
+    dateFormat = "%Y-%m-%d"
+    convertedDateTime = datetime.strptime(dateString, dateFormat)
+    return convertedDateTime.date()
 
 def createChart(chartData, fileName):
-    startDate = datetime.strptime(chartData["start_at"], "%Y-%m-%d").date()
-    endDate = datetime.strptime(chartData["end_at"], "%Y-%m-%d").date()
+    startDate = convertStringToDate(chartData["start_at"])
+    endDate = convertStringToDate(chartData["end_at"])
     baseCurrency = chartData["base"]
 
-    chart = leather.Chart('Exchange rate for {0}'.format(baseCurrency))
-    chart.add_x_axis(tick_formatter=tick_formatter)
+    chartTitle = 'Exchange rate for {0}'.format(baseCurrency)
+    chart = leather.Chart(chartTitle)
+    chart.add_x_axis(tick_formatter = lambda a, b, c : convertDateToString(a))
     chart.add_x_scale(startDate, endDate)
 
-    datesList = list(chartData["rates"].keys())
+    ratesData = chartData["rates"]
+    datesList = list(ratesData.keys())
     datesList.sort()
-    lineData = []
+    lineDataset = []
     
-    numberOfLines = len(chartData["rates"][datesList[0]].keys())
-    for _ in range(numberOfLines):
-        lineData.append([])
-    
-    labelsList = list(chartData["rates"][datesList[0]].keys())
+    tempDate = datesList[0]
+    labelsList = list(ratesData[tempDate].keys())
     labelsList.sort()
-    
+
+    numberOfLines = len(labelsList)
+    for _ in range(numberOfLines):
+        lineDataset.append([])
+
     for i in range(numberOfLines):
         for date in datesList:
-            dayRate = chartData["rates"][date][labelsList[i]]
-            lineData[i].append(dayRate)
+            tempLabel = labelsList[i]
+            dayRate = ratesData[date][tempLabel]
+            lineDataset[i].append(dayRate)
 
-    datesList = [datetime.strptime(date, "%Y-%m-%d").date() for date in datesList]
+    datesList = [ convertStringToDate(dateString) for dateString in datesList ]
     for i in range(numberOfLines):
-        chart.add_line(tuple(zip(datesList, lineData[i])), name = labelsList[i])
+        lineData = tuple(zip(datesList, lineDataset[i]))
+        chart.add_line(lineData, name = labelsList[i])
 
     chart.to_svg(fileName)
 
