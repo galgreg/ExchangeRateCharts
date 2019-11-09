@@ -1,3 +1,4 @@
 prezentacja/
 __pycache__/
 *.pyc
+*.svg
