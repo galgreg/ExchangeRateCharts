@@ -6,6 +6,7 @@ import leather
 def get_options():
     APP_USAGE_DESCRIPTION = """
 Generate exchange rates chart based on data provided by Exchange Rates API.
+Start date and end date should be in YYYY-MM-DD format (example: 2018-07-01).
 
 Usage:
     exchange_rate.py --start-at=<start-date> --end-at=<end-date> [options]
